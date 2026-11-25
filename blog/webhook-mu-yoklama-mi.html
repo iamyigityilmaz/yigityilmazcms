@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webhook her zaman gelmez: Instagram yorumlarını yoklamayla okumak | Yiğit Yılmaz</title>
+<meta name="description" content="Instagram botunun demo kurulumunda DM&#x27;ler webhook&#x27;tan sorunsuz geldi. Yorumlar ise bazen geç geldi, bazen hiç gelmedi. Çözüm, yorumları belli aralıklarla kendim sormak oldu.">
+<meta name="author" content="Yiğit Yılmaz">
+<meta name="theme-color" content="#0f2a2e">
+<meta property="og:title" content="Webhook her zaman gelmez: Instagram yorumlarını yoklamayla okumak | Yiğit Yılmaz">
+<meta property="og:description" content="Instagram botunun demo kurulumunda DM&#x27;ler webhook&#x27;tan sorunsuz geldi. Yorumlar ise bazen geç geldi, bazen hiç gelmedi. Çözüm, yorumları belli aralıklarla kendim sormak oldu.">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="en" href="../en/blog/webhook-or-polling.html">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<a class="atla" href="#icerik">İçeriğe geç</a>
+<header class="ust">
+  <div class="sarmal ust__ic">
+    <a class="marka" href="../index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0f2a2e"/><path d="M9 16H23" stroke="#fafcfb" stroke-width="2.5"/><circle cx="9" cy="16" r="4.5" fill="#e8751a"/><circle cx="23" cy="16" r="4.5" fill="#fafcfb"/></svg>Yiğit Yılmaz</a>
+    <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>Menü</button>
+    <nav class="menu" id="menu" aria-label="Menü">
+      <ul><li><a href="../index.html">Anasayfa</a></li><li><a href="../hakkimda.html">Hakkımda</a></li><li><a href="../projeler.html">Projeler</a></li><li><a href="../galeri.html">Galeri</a></li><li><a href="../blog.html" aria-current="page">Blog</a></li><li><a href="../iletisim.html">İletişim</a></li></ul>
+      <div class="dil" role="group" aria-label="Dil seçimi"><span aria-current="true">TR</span><a href="../en/blog/webhook-or-polling.html" lang="en" hreflang="en" aria-label="English">EN</a></div>
+    </nav>
+  </div>
+</header>
+<main id="icerik">
+<div class="sarmal">
+<article class="makale">
+  <header>
+    <p class="soluk"><time datetime="2026-11-17">17 Kasım 2026</time>, yazan: Yiğit Yılmaz</p>
+    <h1>Webhook her zaman gelmez: Instagram yorumlarını yoklamayla okumak</h1>
+    <p class="makale__ozet">Instagram botunun demo kurulumunda DM&#x27;ler webhook&#x27;tan sorunsuz geldi. Yorumlar ise bazen geç geldi, bazen hiç gelmedi. Çözüm, yorumları belli aralıklarla kendim sormak oldu.</p>
+    <dl class="kunye"><div class="kategori"><dt>Kategori:</dt><dd><a href="../blog.html#kategori=Otomasyon">Otomasyon</a><a href="../blog.html#kategori=Yaz%C4%B1l%C4%B1m">Yazılım</a></dd></div><div><dt>Etiketler:</dt><dd><a href="../blog.html#etiket=webhook">webhook</a><a href="../blog.html#etiket=yoklama%20%28polling%29">yoklama (polling)</a><a href="../blog.html#etiket=n8n">n8n</a><a href="../blog.html#etiket=cloudflared">cloudflared</a><a href="../blog.html#etiket=zamanlay%C4%B1c%C4%B1">zamanlayıcı</a></dd></div></dl>
+  </header>
+  <div class="makale__govde">
+<h2>Webhook ile yoklamanın farkı</h2>
+<p>Webhook'ta karşı taraf sana haber verir: yeni bir şey olunca senin adresine istek atar. Yoklamada (polling) sen sorarsın: belli aralıklarla "yeni bir şey var mı?" diye bakarsın. Webhook hızlı ve ucuzdur ama bildirimin gelip gelmeyeceği senin elinde değildir.</p>
+<h2>Kurduğum düzen</h2>
+<ul>
+<li>DM'ler webhook'tan gelmeye devam ediyor.</li>
+<li>Yorumlar için bir zamanlayıcı her dakika çalışıyor ve son üç gönderinin en yeni 25 yorumunu okuyor.</li>
+<li>Bir yorum kaçarsa birkaç dakika sonra bir telafi turu daha deneniyor.</li>
+</ul>
+<h2>Aynı yoruma iki kez cevap vermemek</h2>
+<p>Yoklamanın bedeli tekrardır: aynı yorumu her dakika yeniden görürsün. Bu yüzden akış, cevap göndermeden hemen önce Instagram'a soruyor: bu yoruma zaten cevap verilmiş mi? Verildiyse dokunmuyor.</p>
+<p>Kendi tuttuğum listeye güvenmek yerine kaynağın kendisine sormak, akış yeniden başladığında ya da liste sıfırlandığında da doğru çalışıyor.</p>
+<h2>Ne olduğunu görebilmek</h2>
+<p>Her turun sonunda kısa bir özet kaydı tutuyorum: kaç yorum okundu, kaçı yeniydi, kaçı cevaplandı, kaçı hangi nedenle atlandı. Bir yorum cevapsız kaldığında ilk baktığım yer bu kayıt oluyor.</p>
+<h2>Yerelde geliştirirken tünel</h2>
+<p>n8n kendi bilgisayarımda çalışıyor. Meta'nın webhook gönderebilmesi için dışarıdan erişilebilen bir adres gerekiyor; bunu cloudflared'in hızlı tüneliyle sağlıyorum:</p>
+<pre><code>cloudflared tunnel --url http://127.0.0.1:XXXX</code></pre>
+<p>XXXX yerine kendi port numaranı yaz. Tek sorun, adresin her açılışta değişmesi. Tünel yeniden başladığında Meta panelinde geri çağırma adresini (Callback URL) güncellemek gerekiyor. Bunu unutmamak için n8n'i ve tüneli başlatan, yeni adresi panoya kopyalayan küçük bir PowerShell betiği yazdım.</p>
+<h2>Ne zaman hangisi</h2>
+<p>Bildirimler güvenilir geliyorsa webhook yeter. Gelmiyorsa ya da kaçan bir olayın bedeli yüksekse, webhook'un yanına yoklamayı da koymak işi sağlama alır. Benim durumumda cevapsız kalan bir soru, dakikada bir fazladan istek atmaktan çok daha pahalı.</p>
+</div>
+  <footer class="makale__alt">
+    <a href="../blog.html">Tüm yazılara dön</a>
+    <a href="../blog/yapay-zeka-etiketler-karari-tablo-verir.html">Sıradaki yazı: Yapay zekâ etiketlesin, kararı tablo versin</a>
+  </footer>
+</article>
+</div>
+</main>
+<footer class="alt">
+  <div class="sarmal alt__ic">
+    <div>
+      <strong>Yiğit Yılmaz</strong>
+      <p>Antalya'da çalışan bir bilgi işlem uzmanı ve bilgisayar programcılığı öğrencisi. Bu site yapay zekâ araçlarıyla (Claude) tasarlandı ve kodlandı.</p>
+      <p>© 2026 Yiğit Yılmaz</p>
+    </div>
+    <ul><li><a href="../index.html">Anasayfa</a></li><li><a href="../hakkimda.html">Hakkımda</a></li><li><a href="../projeler.html">Projeler</a></li><li><a href="../galeri.html">Galeri</a></li><li><a href="../blog.html">Blog</a></li><li><a href="../iletisim.html">İletişim</a></li></ul>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

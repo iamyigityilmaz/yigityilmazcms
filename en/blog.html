@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog | Yiğit Yılmaz</title>
+<meta name="description" content="What I learn while building automations and editing video.">
+<meta name="author" content="Yiğit Yılmaz">
+<meta name="theme-color" content="#0f2a2e">
+<meta property="og:title" content="Blog | Yiğit Yılmaz">
+<meta property="og:description" content="What I learn while building automations and editing video.">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="tr" href="../blog.html">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<a class="atla" href="#icerik">Skip to content</a>
+<header class="ust">
+  <div class="sarmal ust__ic">
+    <a class="marka" href="../en/index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0f2a2e"/><path d="M9 16H23" stroke="#fafcfb" stroke-width="2.5"/><circle cx="9" cy="16" r="4.5" fill="#e8751a"/><circle cx="23" cy="16" r="4.5" fill="#fafcfb"/></svg>Yiğit Yılmaz</a>
+    <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>Menu</button>
+    <nav class="menu" id="menu" aria-label="Menu">
+      <ul><li><a href="../en/index.html">Home</a></li><li><a href="../en/about.html">About</a></li><li><a href="../en/projects.html">Projects</a></li><li><a href="../en/gallery.html">Gallery</a></li><li><a href="../en/blog.html" aria-current="page">Blog</a></li><li><a href="../en/contact.html">Contact</a></li></ul>
+      <div class="dil" role="group" aria-label="Language"><a href="../blog.html" lang="tr" hreflang="tr" aria-label="Türkçe">TR</a><span aria-current="true">EN</span></div>
+    </nav>
+  </div>
+</header>
+<main id="icerik">
+<div class="sarmal"><header class="sayfa-bas"><h1>Blog</h1><p>What I learn while building automations and editing video.</p></header></div>
+<div class="sarmal">
+  <div class="suzgec" role="group" aria-label="Filter by category" data-kategori-metni="{n} post(s) in the “{x}” category." data-etiket-metni="{n} post(s) tagged “{x}”.">
+    <button type="button" data-deger="" aria-pressed="true">All</button><button type="button" data-deger="Videography" aria-pressed="false">Videography</button><button type="button" data-deger="Multimedia" aria-pressed="false">Multimedia</button><button type="button" data-deger="Automation" aria-pressed="false">Automation</button><button type="button" data-deger="Software" aria-pressed="false">Software</button><button type="button" data-deger="Artificial Intelligence" aria-pressed="false">Artificial Intelligence</button>
+    <p class="suzgec__durum" aria-live="polite"></p>
+  </div>
+  <ul class="yazilar"><li class="yazi" data-kategoriler="Videography|Multimedia" data-etiketler="ffmpeg|silencedetect|Python|video editing|Reels">
+  <time datetime="2026-11-22">November 22, 2026</time>
+  <div>
+    <h2><a href="../en/blog/cutting-silence-with-ffmpeg.html">Cutting the silent parts out of a video with ffmpeg</a></h2>
+    <p>In talking-head videos, the slowest job is cutting out every pause by hand. I automated it with ffmpeg&#x27;s silencedetect filter and a short Python script.</p>
+    <dl class="kunye"><div class="kategori"><dt>Category:</dt><dd><a href="../en/blog.html#kategori=Videography">Videography</a><a href="../en/blog.html#kategori=Multimedia">Multimedia</a></dd></div><div><dt>Tags:</dt><dd><a href="../en/blog.html#etiket=ffmpeg">ffmpeg</a><a href="../en/blog.html#etiket=silencedetect">silencedetect</a><a href="../en/blog.html#etiket=Python">Python</a><a href="../en/blog.html#etiket=video%20editing">video editing</a><a href="../en/blog.html#etiket=Reels">Reels</a></dd></div></dl>
+  </div>
+</li><li class="yazi" data-kategoriler="Automation|Software" data-etiketler="webhook|polling|n8n|cloudflared|scheduler">
+  <time datetime="2026-11-17">November 17, 2026</time>
+  <div>
+    <h2><a href="../en/blog/webhook-or-polling.html">Webhooks don&#x27;t always arrive: reading Instagram comments by polling</a></h2>
+    <p>In the demo setup of my Instagram bot, DMs arrived over the webhook without trouble. Comments sometimes came late and sometimes not at all. The fix was to ask for them myself at regular intervals.</p>
+    <dl class="kunye"><div class="kategori"><dt>Category:</dt><dd><a href="../en/blog.html#kategori=Automation">Automation</a><a href="../en/blog.html#kategori=Software">Software</a></dd></div><div><dt>Tags:</dt><dd><a href="../en/blog.html#etiket=webhook">webhook</a><a href="../en/blog.html#etiket=polling">polling</a><a href="../en/blog.html#etiket=n8n">n8n</a><a href="../en/blog.html#etiket=cloudflared">cloudflared</a><a href="../en/blog.html#etiket=scheduler">scheduler</a></dd></div></dl>
+  </div>
+</li><li class="yazi" data-kategoriler="Automation|Artificial Intelligence" data-etiketler="n8n|Instagram|Meta Graph API|decision table|data privacy">
+  <time datetime="2026-11-10">November 10, 2026</time>
+  <div>
+    <h2><a href="../en/blog/ai-labels-a-table-decides.html">Let AI label, let a table decide</a></h2>
+    <p>While building a bot that answers a dental clinic&#x27;s Instagram comments and DMs, the most useful choice I made was not letting AI decide anything.</p>
+    <dl class="kunye"><div class="kategori"><dt>Category:</dt><dd><a href="../en/blog.html#kategori=Automation">Automation</a><a href="../en/blog.html#kategori=Artificial%20Intelligence">Artificial Intelligence</a></dd></div><div><dt>Tags:</dt><dd><a href="../en/blog.html#etiket=n8n">n8n</a><a href="../en/blog.html#etiket=Instagram">Instagram</a><a href="../en/blog.html#etiket=Meta%20Graph%20API">Meta Graph API</a><a href="../en/blog.html#etiket=decision%20table">decision table</a><a href="../en/blog.html#etiket=data%20privacy">data privacy</a></dd></div></dl>
+  </div>
+</li></ul>
+</div>
+</main>
+<footer class="alt">
+  <div class="sarmal alt__ic">
+    <div>
+      <strong>Yiğit Yılmaz</strong>
+      <p>An IT specialist and computer programming student working in Antalya. This site was designed and coded with AI tools (Claude).</p>
+      <p>© 2026 Yiğit Yılmaz</p>
+    </div>
+    <ul><li><a href="../en/index.html">Home</a></li><li><a href="../en/about.html">About</a></li><li><a href="../en/projects.html">Projects</a></li><li><a href="../en/gallery.html">Gallery</a></li><li><a href="../en/blog.html">Blog</a></li><li><a href="../en/contact.html">Contact</a></li></ul>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

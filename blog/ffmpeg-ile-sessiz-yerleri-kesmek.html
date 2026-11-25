@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ffmpeg ile videodaki sessiz yerleri otomatik kesmek | Yiğit Yılmaz</title>
+<meta name="description" content="Kameraya konuşulan videolarda en çok zaman alan iş, duraksamaları tek tek kesmek. Bunu ffmpeg&#x27;in silencedetect filtresi ve kısa bir Python betiğiyle otomatiğe bağladım.">
+<meta name="author" content="Yiğit Yılmaz">
+<meta name="theme-color" content="#0f2a2e">
+<meta property="og:title" content="ffmpeg ile videodaki sessiz yerleri otomatik kesmek | Yiğit Yılmaz">
+<meta property="og:description" content="Kameraya konuşulan videolarda en çok zaman alan iş, duraksamaları tek tek kesmek. Bunu ffmpeg&#x27;in silencedetect filtresi ve kısa bir Python betiğiyle otomatiğe bağladım.">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="en" href="../en/blog/cutting-silence-with-ffmpeg.html">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<a class="atla" href="#icerik">İçeriğe geç</a>
+<header class="ust">
+  <div class="sarmal ust__ic">
+    <a class="marka" href="../index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0f2a2e"/><path d="M9 16H23" stroke="#fafcfb" stroke-width="2.5"/><circle cx="9" cy="16" r="4.5" fill="#e8751a"/><circle cx="23" cy="16" r="4.5" fill="#fafcfb"/></svg>Yiğit Yılmaz</a>
+    <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>Menü</button>
+    <nav class="menu" id="menu" aria-label="Menü">
+      <ul><li><a href="../index.html">Anasayfa</a></li><li><a href="../hakkimda.html">Hakkımda</a></li><li><a href="../projeler.html">Projeler</a></li><li><a href="../galeri.html">Galeri</a></li><li><a href="../blog.html" aria-current="page">Blog</a></li><li><a href="../iletisim.html">İletişim</a></li></ul>
+      <div class="dil" role="group" aria-label="Dil seçimi"><span aria-current="true">TR</span><a href="../en/blog/cutting-silence-with-ffmpeg.html" lang="en" hreflang="en" aria-label="English">EN</a></div>
+    </nav>
+  </div>
+</header>
+<main id="icerik">
+<div class="sarmal">
+<article class="makale">
+  <header>
+    <p class="soluk"><time datetime="2026-11-22">22 Kasım 2026</time>, yazan: Yiğit Yılmaz</p>
+    <h1>ffmpeg ile videodaki sessiz yerleri otomatik kesmek</h1>
+    <p class="makale__ozet">Kameraya konuşulan videolarda en çok zaman alan iş, duraksamaları tek tek kesmek. Bunu ffmpeg&#x27;in silencedetect filtresi ve kısa bir Python betiğiyle otomatiğe bağladım.</p>
+    <dl class="kunye"><div class="kategori"><dt>Kategori:</dt><dd><a href="../blog.html#kategori=Videografi">Videografi</a><a href="../blog.html#kategori=Multimedya">Multimedya</a></dd></div><div><dt>Etiketler:</dt><dd><a href="../blog.html#etiket=ffmpeg">ffmpeg</a><a href="../blog.html#etiket=silencedetect">silencedetect</a><a href="../blog.html#etiket=Python">Python</a><a href="../blog.html#etiket=video%20kurgu">video kurgu</a><a href="../blog.html#etiket=Reels">Reels</a></dd></div></dl>
+  </header>
+  <div class="makale__govde">
+<h2>1. Sessiz yerleri bul</h2>
+<p>ffmpeg'in <code>silencedetect</code> filtresi videoyu değiştirmez, yalnızca sessizliklerin nerede başlayıp bittiğini yazar:</p>
+<pre><code>ffmpeg -i girdi.mp4 -af silencedetect=noise=-32dB:d=0.5 -f null -</code></pre>
+<p><code>noise</code> sessizlik eşiğidir, <code>d</code> ise bir boşluğun sessizlik sayılması için en az kaç saniye sürmesi gerektiğini söyler. Çıktıda şuna benzer satırlar görünür:</p>
+<pre><code>silence_start: 3.20
+silence_end: 5.10 | silence_duration: 1.90</code></pre>
+<h2>2. Kalacak parçaları hesapla</h2>
+<p>Python betiği bu satırları okuyup sessizliklerin arasında kalan bölümleri listeler. Kesim sert durmasın diye her parçanın başına ve sonuna küçük bir pay bırakıyorum; 0,1 saniye çoğu zaman yetiyor.</p>
+<h2>3. Kes ve birleştir</h2>
+<p>Kalacak aralıklar belli olunca tek komutla hem kesip hem birleştirmek mümkün:</p>
+<pre><code>ffmpeg -i girdi.mp4 \
+  -vf "select='between(t,0,3.2)+between(t,5.1,12.4)',setpts=N/FRAME_RATE/TB" \
+  -af "aselect='between(t,0,3.2)+between(t,5.1,12.4)',asetpts=N/SR/TB" \
+  cikti.mp4</code></pre>
+<p><code>select</code> görüntüde, <code>aselect</code> seste aynı aralıkları tutar. <code>setpts</code> ve <code>asetpts</code> zaman damgalarını yeniden sıralar; bunlar olmazsa video boşluklu oynar.</p>
+<h2>Eşiği ayarlamak</h2>
+<div class="tablo-kaydir"><table>
+<thead><tr><th>Durum</th><th>Eşik</th><th>Etkisi</th></tr></thead>
+<tbody>
+<tr><td>Başlangıç</td><td>-32 dB</td><td>Çoğu kayıtta doğru sonuç verir</td></tr>
+<tr><td>Kelimelerin ucu kesiliyorsa</td><td>-40 dB</td><td>Yalnızca gerçekten sessiz yerler kesilir</td></tr>
+<tr><td>Duraksamalar kalıyorsa</td><td>-26 dB</td><td>Daha çok yer sessiz sayılır</td></tr>
+</tbody></table></div>
+<p>Ortam gürültüsü yüksek kayıtlarda eşiği yükseltmek gerekir, çünkü kimsenin konuşmadığı anlar bile -32 dB'nin üstünde kalır.</p>
+<h2>Reels için dışa aktarım</h2>
+<ul>
+<li>1080 × 1920 piksel, saniyede 30 kare.</li>
+<li>Kalite ve hız dengesi için <code>-crf 20 -preset veryfast</code>.</li>
+<li>Ses yüksekliği <code>loudnorm</code> filtresiyle -14 LUFS'a eşitlenir.</li>
+</ul>
+<h2>Neden bilgisayarda</h2>
+<p>Dosya bilgisayardan çıkmıyor. İnsanların göründüğü bir videoyu sırf sessizlikleri kesmek için üçüncü bir servise yüklemek gerekmiyor. Hem daha hızlı hem de gizlilik açısından daha rahat.</p>
+</div>
+  <footer class="makale__alt">
+    <a href="../blog.html">Tüm yazılara dön</a>
+    <a href="../blog/webhook-mu-yoklama-mi.html">Sıradaki yazı: Webhook her zaman gelmez: Instagram yorumlarını yoklamayla okumak</a>
+  </footer>
+</article>
+</div>
+</main>
+<footer class="alt">
+  <div class="sarmal alt__ic">
+    <div>
+      <strong>Yiğit Yılmaz</strong>
+      <p>Antalya'da çalışan bir bilgi işlem uzmanı ve bilgisayar programcılığı öğrencisi. Bu site yapay zekâ araçlarıyla (Claude) tasarlandı ve kodlandı.</p>
+      <p>© 2026 Yiğit Yılmaz</p>
+    </div>
+    <ul><li><a href="../index.html">Anasayfa</a></li><li><a href="../hakkimda.html">Hakkımda</a></li><li><a href="../projeler.html">Projeler</a></li><li><a href="../galeri.html">Galeri</a></li><li><a href="../blog.html">Blog</a></li><li><a href="../iletisim.html">İletişim</a></li></ul>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>

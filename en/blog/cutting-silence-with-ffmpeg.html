@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cutting the silent parts out of a video with ffmpeg | Yiğit Yılmaz</title>
+<meta name="description" content="In talking-head videos, the slowest job is cutting out every pause by hand. I automated it with ffmpeg&#x27;s silencedetect filter and a short Python script.">
+<meta name="author" content="Yiğit Yılmaz">
+<meta name="theme-color" content="#0f2a2e">
+<meta property="og:title" content="Cutting the silent parts out of a video with ffmpeg | Yiğit Yılmaz">
+<meta property="og:description" content="In talking-head videos, the slowest job is cutting out every pause by hand. I automated it with ffmpeg&#x27;s silencedetect filter and a short Python script.">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="tr" href="../../blog/ffmpeg-ile-sessiz-yerleri-kesmek.html">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/fonts.css">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body>
+<a class="atla" href="#icerik">Skip to content</a>
+<header class="ust">
+  <div class="sarmal ust__ic">
+    <a class="marka" href="../../en/index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0f2a2e"/><path d="M9 16H23" stroke="#fafcfb" stroke-width="2.5"/><circle cx="9" cy="16" r="4.5" fill="#e8751a"/><circle cx="23" cy="16" r="4.5" fill="#fafcfb"/></svg>Yiğit Yılmaz</a>
+    <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>Menu</button>
+    <nav class="menu" id="menu" aria-label="Menu">
+      <ul><li><a href="../../en/index.html">Home</a></li><li><a href="../../en/about.html">About</a></li><li><a href="../../en/projects.html">Projects</a></li><li><a href="../../en/gallery.html">Gallery</a></li><li><a href="../../en/blog.html" aria-current="page">Blog</a></li><li><a href="../../en/contact.html">Contact</a></li></ul>
+      <div class="dil" role="group" aria-label="Language"><a href="../../blog/ffmpeg-ile-sessiz-yerleri-kesmek.html" lang="tr" hreflang="tr" aria-label="Türkçe">TR</a><span aria-current="true">EN</span></div>
+    </nav>
+  </div>
+</header>
+<main id="icerik">
+<div class="sarmal">
+<article class="makale">
+  <header>
+    <p class="soluk"><time datetime="2026-11-22">November 22, 2026</time>, by Yiğit Yılmaz</p>
+    <h1>Cutting the silent parts out of a video with ffmpeg</h1>
+    <p class="makale__ozet">In talking-head videos, the slowest job is cutting out every pause by hand. I automated it with ffmpeg&#x27;s silencedetect filter and a short Python script.</p>
+    <dl class="kunye"><div class="kategori"><dt>Category:</dt><dd><a href="../../en/blog.html#kategori=Videography">Videography</a><a href="../../en/blog.html#kategori=Multimedia">Multimedia</a></dd></div><div><dt>Tags:</dt><dd><a href="../../en/blog.html#etiket=ffmpeg">ffmpeg</a><a href="../../en/blog.html#etiket=silencedetect">silencedetect</a><a href="../../en/blog.html#etiket=Python">Python</a><a href="../../en/blog.html#etiket=video%20editing">video editing</a><a href="../../en/blog.html#etiket=Reels">Reels</a></dd></div></dl>
+  </header>
+  <div class="makale__govde">
+<h2>1. Find the silent parts</h2>
+<p>ffmpeg's <code>silencedetect</code> filter does not change the video. It only reports where each silence starts and ends:</p>
+<pre><code>ffmpeg -i input.mp4 -af silencedetect=noise=-32dB:d=0.5 -f null -</code></pre>
+<p><code>noise</code> is the silence threshold, and <code>d</code> is how many seconds a gap must last before it counts as silence. The output contains lines like these:</p>
+<pre><code>silence_start: 3.20
+silence_end: 5.10 | silence_duration: 1.90</code></pre>
+<h2>2. Work out what to keep</h2>
+<p>A Python script reads those lines and lists the sections between the silences. To keep the cuts from sounding abrupt, I leave a small margin at both ends of each section; 0.1 seconds is usually enough.</p>
+<h2>3. Cut and join</h2>
+<p>Once the ranges are known, one command can cut and join at the same time:</p>
+<pre><code>ffmpeg -i input.mp4 \
+  -vf "select='between(t,0,3.2)+between(t,5.1,12.4)',setpts=N/FRAME_RATE/TB" \
+  -af "aselect='between(t,0,3.2)+between(t,5.1,12.4)',asetpts=N/SR/TB" \
+  output.mp4</code></pre>
+<p><code>select</code> keeps the same ranges in the picture that <code>aselect</code> keeps in the sound. <code>setpts</code> and <code>asetpts</code> renumber the timestamps; without them the video plays with gaps.</p>
+<h2>Tuning the threshold</h2>
+<div class="tablo-kaydir"><table>
+<thead><tr><th>Situation</th><th>Threshold</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td>Starting point</td><td>-32 dB</td><td>Works for most recordings</td></tr>
+<tr><td>Word endings get clipped</td><td>-40 dB</td><td>Only truly silent parts are cut</td></tr>
+<tr><td>Pauses are left in</td><td>-26 dB</td><td>More of the audio counts as silence</td></tr>
+</tbody></table></div>
+<p>Recordings with a lot of background noise need a higher threshold, because even the moments when nobody speaks stay above -32 dB.</p>
+<h2>Exporting for Reels</h2>
+<ul>
+<li>1080 × 1920 pixels at 30 frames per second.</li>
+<li><code>-crf 20 -preset veryfast</code> for a balance of quality and speed.</li>
+<li>Loudness evened out to -14 LUFS with the <code>loudnorm</code> filter.</li>
+</ul>
+<h2>Why on the computer</h2>
+<p>The file never leaves the computer. There is no need to upload a video with people in it to a third-party service just to remove the pauses. It is faster, and easier on privacy.</p>
+</div>
+  <footer class="makale__alt">
+    <a href="../../en/blog.html">Back to all posts</a>
+    <a href="../../en/blog/webhook-or-polling.html">Next post: Webhooks don&#x27;t always arrive: reading Instagram comments by polling</a>
+  </footer>
+</article>
+</div>
+</main>
+<footer class="alt">
+  <div class="sarmal alt__ic">
+    <div>
+      <strong>Yiğit Yılmaz</strong>
+      <p>An IT specialist and computer programming student working in Antalya. This site was designed and coded with AI tools (Claude).</p>
+      <p>© 2026 Yiğit Yılmaz</p>
+    </div>
+    <ul><li><a href="../../en/index.html">Home</a></li><li><a href="../../en/about.html">About</a></li><li><a href="../../en/projects.html">Projects</a></li><li><a href="../../en/gallery.html">Gallery</a></li><li><a href="../../en/blog.html">Blog</a></li><li><a href="../../en/contact.html">Contact</a></li></ul>
+  </div>
+</footer>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

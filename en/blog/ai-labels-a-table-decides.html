@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let AI label, let a table decide | Yiğit Yılmaz</title>
+<meta name="description" content="While building a bot that answers a dental clinic&#x27;s Instagram comments and DMs, the most useful choice I made was not letting AI decide anything.">
+<meta name="author" content="Yiğit Yılmaz">
+<meta name="theme-color" content="#0f2a2e">
+<meta property="og:title" content="Let AI label, let a table decide | Yiğit Yılmaz">
+<meta property="og:description" content="While building a bot that answers a dental clinic&#x27;s Instagram comments and DMs, the most useful choice I made was not letting AI decide anything.">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="tr" href="../../blog/yapay-zeka-etiketler-karari-tablo-verir.html">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/fonts.css">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body>
+<a class="atla" href="#icerik">Skip to content</a>
+<header class="ust">
+  <div class="sarmal ust__ic">
+    <a class="marka" href="../../en/index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0f2a2e"/><path d="M9 16H23" stroke="#fafcfb" stroke-width="2.5"/><circle cx="9" cy="16" r="4.5" fill="#e8751a"/><circle cx="23" cy="16" r="4.5" fill="#fafcfb"/></svg>Yiğit Yılmaz</a>
+    <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>Menu</button>
+    <nav class="menu" id="menu" aria-label="Menu">
+      <ul><li><a href="../../en/index.html">Home</a></li><li><a href="../../en/about.html">About</a></li><li><a href="../../en/projects.html">Projects</a></li><li><a href="../../en/gallery.html">Gallery</a></li><li><a href="../../en/blog.html" aria-current="page">Blog</a></li><li><a href="../../en/contact.html">Contact</a></li></ul>
+      <div class="dil" role="group" aria-label="Language"><a href="../../blog/yapay-zeka-etiketler-karari-tablo-verir.html" lang="tr" hreflang="tr" aria-label="Türkçe">TR</a><span aria-current="true">EN</span></div>
+    </nav>
+  </div>
+</header>
+<main id="icerik">
+<div class="sarmal">
+<article class="makale">
+  <header>
+    <p class="soluk"><time datetime="2026-11-10">November 10, 2026</time>, by Yiğit Yılmaz</p>
+    <h1>Let AI label, let a table decide</h1>
+    <p class="makale__ozet">While building a bot that answers a dental clinic&#x27;s Instagram comments and DMs, the most useful choice I made was not letting AI decide anything.</p>
+    <dl class="kunye"><div class="kategori"><dt>Category:</dt><dd><a href="../../en/blog.html#kategori=Automation">Automation</a><a href="../../en/blog.html#kategori=Artificial%20Intelligence">Artificial Intelligence</a></dd></div><div><dt>Tags:</dt><dd><a href="../../en/blog.html#etiket=n8n">n8n</a><a href="../../en/blog.html#etiket=Instagram">Instagram</a><a href="../../en/blog.html#etiket=Meta%20Graph%20API">Meta Graph API</a><a href="../../en/blog.html#etiket=decision%20table">decision table</a><a href="../../en/blog.html#etiket=data%20privacy">data privacy</a></dd></div></dl>
+  </header>
+  <div class="makale__govde">
+<h2>The problem</h2>
+<p>Most messages reaching the clinic come from abroad, at every hour of the day. My first idea was to hand the message to a language model and let it write the reply. I quickly saw why that was risky: one day the model might quote a price, and another day it might tell someone "this treatment suits you". In healthcare neither is acceptable.</p>
+<h2>The fix: two separate jobs</h2>
+<p>I split the flow in two. The AI returns only three things: the language of the message, its category and a suggested reply. What actually happens is settled by a decision table I wrote by hand.</p>
+<div class="tablo-kaydir"><table>
+<thead><tr><th>Category</th><th>What happens</th></tr></thead>
+<tbody>
+<tr><td>Information request</td><td>Short reply, details by DM</td></tr>
+<tr><td>Price question</td><td>No price is written; the person is invited to DM</td></tr>
+<tr><td>Praise</td><td>A public thank-you only</td></tr>
+<tr><td>Complaint or accusation</td><td>No automatic reply; the team is emailed and a human takes over</td></tr>
+<tr><td>Medical emergency</td><td>An approved fixed message, plus an email to the team</td></tr>
+<tr><td>Spam</td><td>Silence</td></tr>
+</tbody></table></div>
+<p>The table looks dull, and that is exactly what makes it safe. I can say what will happen in a category by looking at the table, without reading code.</p>
+<h2>A second check in code</h2>
+<p>Telling the model "don't write prices" is not enough. So right before sending, code checks the text once more: if anything looks like a price, the message does not go out. In emergencies the model's text is not used at all, and a pre-approved fixed message is sent.</p>
+<h2>The language rule</h2>
+<p>The reply goes out in whatever language and alphabet the person used. Russian typed in Latin letters gets an answer in Cyrillic. If the model answers in the wrong language, the flow notices and asks once more with a correction note.</p>
+<h2>Data privacy</h2>
+<p>Only the message text reaches the AI service; names and phone numbers do not. Under data protection law, the easiest data to defend is the data you never sent.</p>
+<h2>Testing</h2>
+<p>For every version I re-ran more than 30 scenarios: questions in different languages, insults hidden inside praise, and comments that say "ignore your previous instructions". The bot is now on its fifteenth version.</p>
+<h2>What I learned</h2>
+<p>Treating AI as the least trusted part of the flow, instead of the smartest, made everything easier. If the model gets it wrong, the worst case is a mislabelled message that ends up with a human.</p>
+</div>
+  <footer class="makale__alt">
+    <a href="../../en/blog.html">Back to all posts</a>
+    <a href="../../en/blog/cutting-silence-with-ffmpeg.html">Next post: Cutting the silent parts out of a video with ffmpeg</a>
+  </footer>
+</article>
+</div>
+</main>
+<footer class="alt">
+  <div class="sarmal alt__ic">
+    <div>
+      <strong>Yiğit Yılmaz</strong>
+      <p>An IT specialist and computer programming student working in Antalya. This site was designed and coded with AI tools (Claude).</p>
+      <p>© 2026 Yiğit Yılmaz</p>
+    </div>
+    <ul><li><a href="../../en/index.html">Home</a></li><li><a href="../../en/about.html">About</a></li><li><a href="../../en/projects.html">Projects</a></li><li><a href="../../en/gallery.html">Gallery</a></li><li><a href="../../en/blog.html">Blog</a></li><li><a href="../../en/contact.html">Contact</a></li></ul>
+  </div>
+</footer>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

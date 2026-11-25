@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webhooks don&#x27;t always arrive: reading Instagram comments by polling | Yiğit Yılmaz</title>
+<meta name="description" content="In the demo setup of my Instagram bot, DMs arrived over the webhook without trouble. Comments sometimes came late and sometimes not at all. The fix was to ask for them myself at regular intervals.">
+<meta name="author" content="Yiğit Yılmaz">
+<meta name="theme-color" content="#0f2a2e">
+<meta property="og:title" content="Webhooks don&#x27;t always arrive: reading Instagram comments by polling | Yiğit Yılmaz">
+<meta property="og:description" content="In the demo setup of my Instagram bot, DMs arrived over the webhook without trouble. Comments sometimes came late and sometimes not at all. The fix was to ask for them myself at regular intervals.">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="tr" href="../../blog/webhook-mu-yoklama-mi.html">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/fonts.css">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body>
+<a class="atla" href="#icerik">Skip to content</a>
+<header class="ust">
+  <div class="sarmal ust__ic">
+    <a class="marka" href="../../en/index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0f2a2e"/><path d="M9 16H23" stroke="#fafcfb" stroke-width="2.5"/><circle cx="9" cy="16" r="4.5" fill="#e8751a"/><circle cx="23" cy="16" r="4.5" fill="#fafcfb"/></svg>Yiğit Yılmaz</a>
+    <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>Menu</button>
+    <nav class="menu" id="menu" aria-label="Menu">
+      <ul><li><a href="../../en/index.html">Home</a></li><li><a href="../../en/about.html">About</a></li><li><a href="../../en/projects.html">Projects</a></li><li><a href="../../en/gallery.html">Gallery</a></li><li><a href="../../en/blog.html" aria-current="page">Blog</a></li><li><a href="../../en/contact.html">Contact</a></li></ul>
+      <div class="dil" role="group" aria-label="Language"><a href="../../blog/webhook-mu-yoklama-mi.html" lang="tr" hreflang="tr" aria-label="Türkçe">TR</a><span aria-current="true">EN</span></div>
+    </nav>
+  </div>
+</header>
+<main id="icerik">
+<div class="sarmal">
+<article class="makale">
+  <header>
+    <p class="soluk"><time datetime="2026-11-17">November 17, 2026</time>, by Yiğit Yılmaz</p>
+    <h1>Webhooks don&#x27;t always arrive: reading Instagram comments by polling</h1>
+    <p class="makale__ozet">In the demo setup of my Instagram bot, DMs arrived over the webhook without trouble. Comments sometimes came late and sometimes not at all. The fix was to ask for them myself at regular intervals.</p>
+    <dl class="kunye"><div class="kategori"><dt>Category:</dt><dd><a href="../../en/blog.html#kategori=Automation">Automation</a><a href="../../en/blog.html#kategori=Software">Software</a></dd></div><div><dt>Tags:</dt><dd><a href="../../en/blog.html#etiket=webhook">webhook</a><a href="../../en/blog.html#etiket=polling">polling</a><a href="../../en/blog.html#etiket=n8n">n8n</a><a href="../../en/blog.html#etiket=cloudflared">cloudflared</a><a href="../../en/blog.html#etiket=scheduler">scheduler</a></dd></div></dl>
+  </header>
+  <div class="makale__govde">
+<h2>How a webhook differs from polling</h2>
+<p>With a webhook the other side tells you: when something new happens, it sends a request to your address. With polling you do the asking: at regular intervals you check whether anything is new. A webhook is fast and cheap, but whether the notification arrives is out of your hands.</p>
+<h2>The setup I ended up with</h2>
+<ul>
+<li>DMs still arrive over the webhook.</li>
+<li>For comments, a scheduler runs every minute and reads the newest 25 comments on the last three posts.</li>
+<li>If a comment is missed, a catch-up round tries again a few minutes later.</li>
+</ul>
+<h2>Never answering the same comment twice</h2>
+<p>The price of polling is repetition: you see the same comment again every minute. So right before sending a reply, the flow asks Instagram whether that comment has already been answered. If it has, the flow leaves it alone.</p>
+<p>Asking the source instead of trusting my own list keeps working when the flow restarts or the list is reset.</p>
+<h2>Being able to see what happened</h2>
+<p>At the end of every round I keep a short summary record: how many comments were read, how many were new, how many were answered, and how many were skipped and why. When a comment goes unanswered, that record is the first place I look.</p>
+<h2>A tunnel for local development</h2>
+<p>n8n runs on my own computer. For Meta to send webhooks it needs an address reachable from outside, which I get from cloudflared's quick tunnel:</p>
+<pre><code>cloudflared tunnel --url http://127.0.0.1:XXXX</code></pre>
+<p>Replace XXXX with your own port number. The one catch is that the address changes on every start. When the tunnel restarts, the Callback URL in the Meta panel has to be updated. So that I don't forget, I wrote a small PowerShell script that starts n8n and the tunnel and copies the new address to the clipboard.</p>
+<h2>Which one, and when</h2>
+<p>If notifications arrive reliably, a webhook is enough. If they don't, or if a missed event is costly, adding polling next to the webhook makes the system safe. In my case an unanswered question costs far more than one extra request per minute.</p>
+</div>
+  <footer class="makale__alt">
+    <a href="../../en/blog.html">Back to all posts</a>
+    <a href="../../en/blog/ai-labels-a-table-decides.html">Next post: Let AI label, let a table decide</a>
+  </footer>
+</article>
+</div>
+</main>
+<footer class="alt">
+  <div class="sarmal alt__ic">
+    <div>
+      <strong>Yiğit Yılmaz</strong>
+      <p>An IT specialist and computer programming student working in Antalya. This site was designed and coded with AI tools (Claude).</p>
+      <p>© 2026 Yiğit Yılmaz</p>
+    </div>
+    <ul><li><a href="../../en/index.html">Home</a></li><li><a href="../../en/about.html">About</a></li><li><a href="../../en/projects.html">Projects</a></li><li><a href="../../en/gallery.html">Gallery</a></li><li><a href="../../en/blog.html">Blog</a></li><li><a href="../../en/contact.html">Contact</a></li></ul>
+  </div>
+</footer>
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

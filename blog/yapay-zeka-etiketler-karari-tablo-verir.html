@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yapay zekâ etiketlesin, kararı tablo versin | Yiğit Yılmaz</title>
+<meta name="description" content="Bir diş kliniğinin Instagram yorumlarını ve DM&#x27;lerini karşılayan botu kurarken en çok işe yarayan karar şu oldu: yapay zekâya karar verdirmemek.">
+<meta name="author" content="Yiğit Yılmaz">
+<meta name="theme-color" content="#0f2a2e">
+<meta property="og:title" content="Yapay zekâ etiketlesin, kararı tablo versin | Yiğit Yılmaz">
+<meta property="og:description" content="Bir diş kliniğinin Instagram yorumlarını ve DM&#x27;lerini karşılayan botu kurarken en çok işe yarayan karar şu oldu: yapay zekâya karar verdirmemek.">
+<meta property="og:type" content="website">
+<link rel="alternate" hreflang="en" href="../en/blog/ai-labels-a-table-decides.html">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/fonts.css">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body>
+<a class="atla" href="#icerik">İçeriğe geç</a>
+<header class="ust">
+  <div class="sarmal ust__ic">
+    <a class="marka" href="../index.html"><svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#0f2a2e"/><path d="M9 16H23" stroke="#fafcfb" stroke-width="2.5"/><circle cx="9" cy="16" r="4.5" fill="#e8751a"/><circle cx="23" cy="16" r="4.5" fill="#fafcfb"/></svg>Yiğit Yılmaz</a>
+    <button class="menu-dugme" type="button" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" fill="none"/></svg>Menü</button>
+    <nav class="menu" id="menu" aria-label="Menü">
+      <ul><li><a href="../index.html">Anasayfa</a></li><li><a href="../hakkimda.html">Hakkımda</a></li><li><a href="../projeler.html">Projeler</a></li><li><a href="../galeri.html">Galeri</a></li><li><a href="../blog.html" aria-current="page">Blog</a></li><li><a href="../iletisim.html">İletişim</a></li></ul>
+      <div class="dil" role="group" aria-label="Dil seçimi"><span aria-current="true">TR</span><a href="../en/blog/ai-labels-a-table-decides.html" lang="en" hreflang="en" aria-label="English">EN</a></div>
+    </nav>
+  </div>
+</header>
+<main id="icerik">
+<div class="sarmal">
+<article class="makale">
+  <header>
+    <p class="soluk"><time datetime="2026-11-10">10 Kasım 2026</time>, yazan: Yiğit Yılmaz</p>
+    <h1>Yapay zekâ etiketlesin, kararı tablo versin</h1>
+    <p class="makale__ozet">Bir diş kliniğinin Instagram yorumlarını ve DM&#x27;lerini karşılayan botu kurarken en çok işe yarayan karar şu oldu: yapay zekâya karar verdirmemek.</p>
+    <dl class="kunye"><div class="kategori"><dt>Kategori:</dt><dd><a href="../blog.html#kategori=Otomasyon">Otomasyon</a><a href="../blog.html#kategori=Yapay%20Zek%C3%A2">Yapay Zekâ</a></dd></div><div><dt>Etiketler:</dt><dd><a href="../blog.html#etiket=n8n">n8n</a><a href="../blog.html#etiket=Instagram">Instagram</a><a href="../blog.html#etiket=Meta%20Graph%20API">Meta Graph API</a><a href="../blog.html#etiket=karar%20tablosu">karar tablosu</a><a href="../blog.html#etiket=KVKK">KVKK</a></dd></div></dl>
+  </header>
+  <div class="makale__govde">
+<h2>Sorun</h2>
+<p>Kliniğe gelen mesajların çoğu yurt dışından ve günün her saatinde geliyor. İlk aklıma gelen çözüm, mesajı bir dil modeline verip cevabı ona yazdırmaktı. Bunun neden riskli olduğunu çabuk gördüm: model bir gün fiyat söyleyebilir, başka bir gün birine "bu tedavi size uygun" diyebilir. Sağlık alanında ikisi de kabul edilemez.</p>
+<h2>Çözüm: iki ayrı iş</h2>
+<p>Akışı ikiye böldüm. Yapay zekâ yalnızca üç şey döndürüyor: mesajın dili, kategorisi ve bir cevap önerisi. Ne yapılacağına ise elle yazdığım bir karar tablosu bakıyor.</p>
+<div class="tablo-kaydir"><table>
+<thead><tr><th>Kategori</th><th>Ne yapılır</th></tr></thead>
+<tbody>
+<tr><td>Bilgi sorusu</td><td>Kısa cevap, ayrıntı için DM</td></tr>
+<tr><td>Fiyat sorusu</td><td>Fiyat yazılmaz, kişi DM'e davet edilir</td></tr>
+<tr><td>Övgü</td><td>Yalnızca herkese açık teşekkür</td></tr>
+<tr><td>Şikâyet ya da suçlama</td><td>Otomatik cevap yok; ekibe e-posta, insan devralır</td></tr>
+<tr><td>Acil sağlık durumu</td><td>Onaylı sabit mesaj ve ekibe e-posta</td></tr>
+<tr><td>Spam</td><td>Sessiz kalınır</td></tr>
+</tbody></table></div>
+<p>Tablo sıkıcı görünüyor ama işin güvenli tarafı tam da bu. Bir kategoride ne olacağını kodu okuyarak değil, tabloya bakarak söyleyebiliyorum.</p>
+<h2>Kod seviyesinde ikinci kontrol</h2>
+<p>Modele "fiyat yazma" demek yetmez. Bu yüzden gönderimden hemen önce metni bir de kod denetliyor: fiyat gibi görünen bir ifade varsa mesaj gitmiyor. Acil durumlarda ise modelin yazdığı metin hiç kullanılmıyor, önceden onaylanmış sabit mesaj gidiyor.</p>
+<h2>Dil kuralı</h2>
+<p>Kişi hangi dilde ve hangi alfabeyle yazdıysa cevap o dilde gidiyor. Latin harfleriyle yazılmış Rusçaya Kiril alfabesiyle cevap veriliyor. Model yanlış dilde yazarsa akış bunu fark edip düzeltme notuyla bir kez daha soruyor.</p>
+<h2>Veri gizliliği</h2>
+<p>Yapay zekâ servisine yalnızca mesaj metni gidiyor; ad ve telefon gitmiyor. KVKK açısından en kolay savunulan veri, hiç göndermediğin veridir.</p>
+<h2>Test</h2>
+<p>Her sürümde 30'dan fazla senaryoyu baştan çalıştırdım: farklı dillerde sorular, övgünün içine gizlenmiş hakaret, yorumun içine yazılmış "önceki talimatları unut" denemeleri. Bot şu an on beşinci sürümünde.</p>
+<h2>Öğrendiğim</h2>
+<p>Yapay zekâyı akışın en akıllı parçası gibi değil, en az güvenilen parçası gibi konumlandırmak işleri kolaylaştırdı. Model yanılırsa en kötü ihtimalle mesaj yanlış etiketlenir ve bir insana gider.</p>
+</div>
+  <footer class="makale__alt">
+    <a href="../blog.html">Tüm yazılara dön</a>
+    <a href="../blog/ffmpeg-ile-sessiz-yerleri-kesmek.html">Sıradaki yazı: ffmpeg ile videodaki sessiz yerleri otomatik kesmek</a>
+  </footer>
+</article>
+</div>
+</main>
+<footer class="alt">
+  <div class="sarmal alt__ic">
+    <div>
+      <strong>Yiğit Yılmaz</strong>
+      <p>Antalya'da çalışan bir bilgi işlem uzmanı ve bilgisayar programcılığı öğrencisi. Bu site yapay zekâ araçlarıyla (Claude) tasarlandı ve kodlandı.</p>
+      <p>© 2026 Yiğit Yılmaz</p>
+    </div>
+    <ul><li><a href="../index.html">Anasayfa</a></li><li><a href="../hakkimda.html">Hakkımda</a></li><li><a href="../projeler.html">Projeler</a></li><li><a href="../galeri.html">Galeri</a></li><li><a href="../blog.html">Blog</a></li><li><a href="../iletisim.html">İletişim</a></li></ul>
+  </div>
+</footer>
+<script src="../assets/js/site.js" defer></script>
+</body>
+</html>
